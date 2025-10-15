@@ -6,64 +6,67 @@ function CreatePost () {
     const [error, setError] = useState ('');
     const [success, setSuccess] = useState('');
 
-    const handleTitleChange = (event) => {
-        setTitle(event.target.value);
+    const handleTitleChange = (ev) => {
+      setTitle(ev.target.value);
     };
 
-    const handleBodyChange = (event) => {
-        setBody(event.target.value);
+    const handleBodyChange = (ev) => {
+      setBody(ev.target.value);
     };
 
     const validateForm = () => {
-        if (title.trim() === '' || body.trim() === ''){
-            setError('Both title and body are required');
-            return false;
-        }
-        setError('');
-        return true; 
-    }
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if(!validateForm()) {
-            return;
-        }
-
-        try{
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
-                method: 'POST',
-                body: JSON.stringify ({
-                    title: title,
-                    body: body,
-                    userId: 1,
-                }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF=8',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to creat post');
-            }
-            const data =await response.json();
-
-            setTitle('');
-            setBody('');
-            setSuccess(
-                <div>
-                    <p>New Post Created Successfully:</p>
-                    ID: {data.id}<br/>
-                    Title: {data.title}<br/>
-                    Body: {data.body}
-                </div>
-            );
-        } catch (e) {
-            setError (e.message);
-        }
+      if (title.trim() === '' || body.trim() === ''){
+        setError('Both title and body are required');
+        return false;
+      }
+      setError('');
+        return true;
     };
 
-   return (
+    const handleSubmit = async (ev) => {
+      ev.preventDefault();
+
+      if (!validateForm()) {
+        return;
+      }
+
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          body: JSON.stringify({
+            title:title,
+            body:body,
+            userId:1,
+          }),
+          headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        }
+         );
+         if (!response.ok) {
+          throw new Error('Failed to create post')
+         }
+
+         const data =await response.json();
+
+         setTitle('');
+         setBody('');
+         setSuccess(
+        <div>
+            <p>New Post Created Successfully:</p>
+            ID: {data.id}<br/>
+            Title: {data.title}<br/>
+            Body: {data.body}
+        </div>
+         );
+      } catch (e) {
+        setError(e.message)
+      }
+    };
+
+
+
+    return (
     <div>
       <h1>Create New Post</h1>
       <form onSubmit={handleSubmit}>
@@ -93,7 +96,8 @@ function CreatePost () {
       {error && <div style={{ color: 'red' }}>{error}</div>}
       {success && <div style={{ color: 'green' }}>{success}</div>}
     </div>
-  ); 
-}
+  );
+
+  }
 
 export default CreatePost;
